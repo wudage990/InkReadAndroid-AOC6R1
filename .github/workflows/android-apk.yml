@@ -1,3 +1,4 @@
+
 name: Build Android APK
 
 on:
@@ -18,19 +19,19 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Extract project
+        run: unzip -o *.zip
 
-      - name: Install SDK
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install Android SDK packages
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
-
-      - name: Extract project
-        run: unzip -q *.zip
 
       - name: Build APK
         run: gradle --no-daemon -p InkReadAndroid :app:assembleDebug
@@ -40,3 +41,4 @@ jobs:
         with:
           name: InkRead-AOC6R1-debug-apk
           path: InkReadAndroid/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
