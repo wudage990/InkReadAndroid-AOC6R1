@@ -34,7 +34,7 @@ jobs:
           gradle-version: "8.7"
 
       - name: Build APK
-        run: gradle --no-daemon -p InkReadAndroid :app:assembleDebug
+        run:  gradle --no-daemon -Pkotlin.jvm.target.validation.mode=warning -p InkReadAndroid :app:assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
