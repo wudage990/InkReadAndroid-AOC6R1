@@ -31,7 +31,7 @@ jobs:
           lines = p.read_text().splitlines()
 
           for i, line in enumerate(lines):
-              if line.lstrip().startswith("val rootFile = Regex("):
+              if '.replace(">", "&gt;")' in line:
                   lines[i] = '''                val rootFile = Regex("""full-path=["']([^"']+)["']""").find(container)?.groupValues?.get(1)'''
 
               if line.lstrip().startswith('.replace(">"):
