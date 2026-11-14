@@ -21,19 +21,23 @@ jobs:
 
       - name: Extract project
         run: unzip -o *.zip
-
+        
       - name: Fix Kotlin source syntax
         run: |
           python3 - <<'PY'
           from pathlib import Path
+
           p = Path("InkReadAndroid/app/src/main/java/com/inkread/app/ReaderActivity.kt")
           lines = p.read_text().splitlines()
+
           for i, line in enumerate(lines):
-              if "val rootFile = Regex(" in line:
+              if line.lstrip().startswith("val rootFile = Regex("):
                   lines[i] = '''                val rootFile = Regex("""full-path=["']([^"']+)["']""").find(container)?.groupValues?.get(1)'''
-              if '.replace(">", "&gt;")' in line:
-                  lines[i] = '''        .replace(">", "&gt;").replace("\\\\\\"", "&quot;").replace("'", "&#39;")'''
-          p.write_text("\\n".join(lines) + "\\n")
+
+              if line.lstrip().startswith('.replace(">"):
+                  lines[i] = r'''        .replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&#39;")'''
+
+          p.write_text("\n".join(lines) + "\n")
           PY
 
       - name: Install Android SDK packages
